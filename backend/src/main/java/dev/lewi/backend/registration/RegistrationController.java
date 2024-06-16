@@ -1,18 +1,24 @@
 package dev.lewi.backend.registration;
 
-import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping(path= "api/v1/registration")
-@AllArgsConstructor
+@RequestMapping(path = "api/v1/registration")
 public class RegistrationController {
 
-    private RegistrationService registrationService;
+    private final RegistrationService registrationService;
 
-    public String register(@RequestBody RegistrationRequest request){
-        return registrationService.register(request);
+    @Autowired
+    public RegistrationController(RegistrationService registrationService) {
+        this.registrationService = registrationService;
+    }
+
+    @PostMapping
+    public ResponseEntity<String> register(@RequestBody RegistrationRequest request) {
+        String registrationResult = registrationService.register(request);
+        // Assuming registrationService.register() returns a message indicating success or failure
+        return ResponseEntity.ok(registrationResult);
     }
 }

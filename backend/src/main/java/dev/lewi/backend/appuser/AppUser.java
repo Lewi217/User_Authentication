@@ -19,89 +19,68 @@ import java.util.Collections;
 @Entity
 public class AppUser implements UserDetails {
 
-    // Define a sequence generator for the primary key
+    @Id
     @SequenceGenerator(
-            name = "student_sequence",
-            sequenceName = "student_sequence",
+            name = "app_user_sequence",
+            sequenceName = "app_user_sequence",
             allocationSize = 1
     )
-    @Id
     @GeneratedValue(
             strategy = GenerationType.SEQUENCE,
-            generator = "student_sequence"
+            generator = "app_user_sequence"
     )
-    private Long id; // Primary key
+    private Long id;
 
-    private String name; // User's full name
-    private String username; // Username for authentication
-    private String email; // Email address
-    private String password; // Password (should be hashed)
+    private String name;
+    private String username;
+    private String email;
+    private String password;
 
-    // Enumerated type for user roles
+    // Define an appropriate length for the column
     @Enumerated(EnumType.STRING)
+    @Column(length = 20)
     private AppUserRole appUserRole;
 
-    private Boolean locked = false; // Account lock status
-    private Boolean enabled = false; // Account enabled status
+    private Boolean locked = false;
+    private Boolean enabled = false;
 
-    // Constructor with parameters
-    public AppUser(String name,
-                   String username,
-                   String email,
-                   String password,
-                   AppUserRole appUserRole,
-                   Boolean locked,
-                   Boolean enabled) {
-        this.name = name;
-        this.username = username;
-        this.email = email;
-        this.password = password;
-        this.appUserRole = appUserRole;
-        this.locked = locked;
-        this.enabled = enabled;
-    }
+    // Constructors, UserDetails methods, and other getters/setters...
 
     // UserDetails methods
     @Override
     public boolean isAccountNonExpired() {
-        // Define if the account is expired or not
         return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        // Define if the account is locked or not
         return !locked;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        // Define if the credentials are expired or not
         return true;
     }
 
     @Override
     public boolean isEnabled() {
-        // Define if the account is enabled or not
         return enabled;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // Define authorities (roles) for the user
         SimpleGrantedAuthority authority = new SimpleGrantedAuthority(appUserRole.name());
         return Collections.singletonList(authority);
     }
 
     @Override
     public String getPassword() {
-        // Return the user's password
         return password;
     }
 
     @Override
     public String getUsername() {
-        // Return the user's username
         return username;
     }
 }
+
